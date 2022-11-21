@@ -7,7 +7,10 @@ authors = ["Your Name <you@example.com>"]
 [tool.poetry.dependencies]
 python = "^3.8"
 black = "^22.10.0"
-python-multipart = "^0.0.5"
+python-multipart = "0.0.5"
+fastapi = "^0.87.0"
+uvicorn = "^0.20.0"
+requests = "^2.28.1"
 
 [tool.poetry.dev-dependencies]
 

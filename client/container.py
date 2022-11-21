@@ -1,5 +1,5 @@
 import inspect, os
-
+import gzip
 class Container:
     def __init__(
         self,
@@ -39,6 +39,11 @@ class Container:
         caller_dir_filename = '/'.join(caller_dir_filename)
         self.docker_commands.append(f'CMD ["python", "{caller_dir_filename}"]')
 
+    def _compress_file(self, filename):
+        with open('test.py', 'rb') as f_in, gzip.open('test.gz', 'wb') as f_out:
+           f_out.write(f_in.read())
+        pass
+
     def _collect_all_commands(self):
         self.docker_commands.append(self._create_image())
         self.docker_commands.append("WORKDIR /app")
@@ -51,7 +56,6 @@ class Container:
             for command in self.docker_commands:
                 f.write(command)
                 f.write("\n")
-
     
     def _build_images(self):
         os.system(f"docker build -t {self.name} .")
