@@ -5,23 +5,11 @@ import gzip
 import string
 import random
 import helper as helper
-from pydantic import BaseModel
-from container import Container
+from docker import Dockerfile, Image
+from data import DockerData, ImageBuild
+
 
 app = FastAPI()
-
-class ContainerCreation(BaseModel):
-    id: str
-    filename: str
-    name: str
-    cpu: int
-    ram: int
-    image: str
-    pip: list
-
-class ImageBuild(BaseModel):
-    id: str
-    name: str
 
 
 # gets the python file to containerize
@@ -55,21 +43,22 @@ def push(file: UploadFile):
 
 
 @app.post('/container/')
-def create_container(container_data: ContainerCreation):
-    container_data = container_data.dict()
-    container = Container(**container_data)
-    container.create_dockerfile()
+def create_container(docker_data: DockerData):
+    docker_data = docker_data.dict()
+    dockerfile = Dockerfile(**docker_data)
+    dockerfile.create()
 
-    return {"success": True}
-
-    # send container details to server
+    return {"success": True, "name": dockerfile.name}
 
 @app.post('/image/')
-def build_container(image: ImageBuild):
-    helper.build_image(image.id, image.name)
-    # helper.compress_image(image.id, image.name)
-    return {"success": True}
+def build_container(image_data: ImageBuild):
+    image = Image(image_data.id, image_data.name)
+    image.build()
+    compressed_name = image.compress()
+  
+    return {"success": True, "name": compressed_name}
 
-    # compress and save somewhere to send to deploy machine?
-    # the deploy machine is different than the one running this microservice 
-    
+    # find which machine to deploy to 
+    # send compressed image to deploy machine 
+    # send containr name to deploy machine
+

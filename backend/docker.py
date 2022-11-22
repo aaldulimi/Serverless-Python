@@ -1,12 +1,9 @@
 import os
-
-class Container():
-    def __init__(self, id, filename, name, cpu, ram, image, pip):
+class Dockerfile():
+    def __init__(self, id, name, filename, image, pip):
         self.id = id
-        self.filename = filename
         self.name = name
-        self.cpu = cpu
-        self.ram = ram
+        self.filename = filename
         self.image = image
         self.pip = pip
 
@@ -32,8 +29,22 @@ class Container():
             for command in self.docker_commands:
                 f.write(f"{command}\n\n")
 
-    def create_dockerfile(self):
+    def create(self):
         self._collect_all_commands()
         self._write_dockerfile()
 
    
+class Image():
+    def __init__(self, id, container_name):
+        self.id = id 
+        self.container_name = container_name
+        self.name = f"{id}_{container_name}"
+    
+    def build(self):
+        os.system(f"docker build -t {self.name} {self.id}/")
+
+    def compress(self):
+        compressed_name = f"{self.id}/{self.name}_compressed.tar.gz"
+        os.system(f"docker save {self.name}:latest | gzip > {compressed_name}")
+
+        return compressed_name
