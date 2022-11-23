@@ -1,6 +1,8 @@
 import inspect, os
 import gzip
-class Container:
+
+
+class Deploy:
     def __init__(
         self,
         name: str,
@@ -20,6 +22,10 @@ class Container:
         self._collect_all_commands()
         self._write_dockerfile()
 
+        # compress file, send to server 
+        # check response, send container details to server
+
+        
         # build docker image
         # send container details to server 
         # push docker image to server 
@@ -42,6 +48,7 @@ class Container:
     def _compress_file(self, filename):
         with open('test.py', 'rb') as f_in, gzip.open('test.gz', 'wb') as f_out:
            f_out.write(f_in.read())
+           
         pass
 
     def _collect_all_commands(self):
