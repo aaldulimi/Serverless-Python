@@ -62,3 +62,6 @@ def build_container(image_data: ImageBuild):
     # send compressed image to deploy machine 
     # send containr name to deploy machine
 
+@app.post('/deploy/')
+def deploy_image():
+    pass
